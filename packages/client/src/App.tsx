@@ -11,7 +11,7 @@ function App() {
   }, [])
 
   return (
-    <div className="App">
+    <div className="font-bold p-4 text-3xl">
       <h1>{message}</h1>
     </div>
   )
