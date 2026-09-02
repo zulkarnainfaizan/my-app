@@ -1,11 +1,7 @@
 import OpenAI from 'openai';
 import { conversationRepository } from '../repositories/conversation.repository';
 import { response } from 'express';
-
-//Implementation detail
-const client = new OpenAI({
-   apiKey: process.env.OPENAI_API_KEY,
-});
+import { llmClient } from '../llm/client';
 
 type ChatResponse = {
    id: string;
@@ -19,12 +15,13 @@ export const chatService = {
       prompt: string,
       conversationId: string
    ): Promise<ChatResponse> {
-      const response = await client.responses.create({
-         model: 'gpt-4o-mini',
-         input: prompt,
+      const response = await llmClient.generateText({
+         instructions:
+            'You are a helpful assistant that provides concise and accurate answers.',
+         prompt,
          temperature: 0.2,
-         max_output_tokens: 100,
-         previous_response_id:
+         maxTokens: 100,
+         previousResponseId:
             conversationRepository.getLastResponseId(conversationId),
       });
 
@@ -32,7 +29,7 @@ export const chatService = {
 
       return {
          id: response.id,
-         message: response.output_text,
+         message: response.text,
       };
    },
 };
