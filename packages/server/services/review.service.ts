@@ -14,12 +14,7 @@ export const reviewService = {
       const joindeReviews = reviews.map((r) => r.content).join('\n\n');
       const prompt = template.replace('{{reviews}}', joindeReviews);
 
-      const { text: summary } = await llmClient.generateText({
-         model: 'gpt-4.1',
-         prompt,
-         temperature: 0.2,
-         maxTokens: 500,
-      });
+      const summary = await llmClient.summarize(joindeReviews);
 
       await reviewRepository.storeReviewSummary(productId, summary);
 
